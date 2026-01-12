@@ -3,18 +3,6 @@ from datetime import datetime as dt
 import time
 from collections import Counter
 
-
-'''with open('2022_place_canvas_history.csv', newline='', encoding='utf-8') as f:
-    reader = csv.reader(f)
-    header = next(reader)
-    print(header)
-
-    for i, row in enumerate(reader):
-        if i == 5:
-            break
-        print(row)
-
-'''
 '''
 input start and end hours in format: YYYY-MM-DD HH
     must validate that end hour is after start hour
@@ -57,7 +45,7 @@ def most_placed_color(start_date: str, end_date: str):
             # Timestamp format: 2022-04-04 00:53:51.577 UTC
             # Slice first 19 chars to ignore milliseconds/timezone: 2022-04-04 00:53:51
             i += 1
-            if i % 10 == 0:
+            if i % 100 == 0:
                 print(f"Processed {i} rows", flush=True)
 
             try:
@@ -76,13 +64,13 @@ def most_placed_color(start_date: str, end_date: str):
 
 
 if __name__ == "__main__":
-    # Example usage
     start = '2022-04-01 12'
-    end = '2022-04-01 13'
+    end = '2022-04-01 18'
     color, pixel, duration = most_placed_color(start, end)
     print(f"From {start} to {end}:")
+    print(f"Computation time: {duration:.2f} ms")
     print(f"Most placed color: {color}")
     print(f"Most placed pixel location: {pixel}")
-    print(f"Computation time: {duration:.2f} ms")
+    
 
 
