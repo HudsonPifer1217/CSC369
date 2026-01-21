@@ -21,33 +21,33 @@ def most_placed_color(start_date: str, end_date: str, path: str = "2022_place_ca
     
     t0 = time.perf_counter_ns()
 
-    df = pl.read_parquet(path)
-
-    window = df.filter(
-    (pl.col("timestamp") >= start) &
-    (pl.col("timestamp") < end)
+    window = (
+        pl.scan_parquet(path)
+        .select(["timestamp", "pixel_color", "coordinate"]) 
+        .filter((pl.col("timestamp") >= pl.lit(start)) & (pl.col("timestamp") < pl.lit(end)))
     )
 
-    if window.is_empty():
-        raise ValueError("No placements found in the given time range.")
-
-    top_color = (
+    top_color_df = (
         window
         .group_by("pixel_color")
         .len()
         .sort("len", descending=True)
         .select("pixel_color")
-        .row(0)[0]
+        .collect(engine="streaming")
     )
 
-    top_pixel = (
+    top_pixel_df= (
         window
         .group_by("coordinate")
         .len()
         .sort("len", descending=True)
         .select("coordinate")
-        .row(0)[0]
+        .collect(engine="streaming")
     )
+
+    top_color = top_color_df.item(0,0)
+    top_pixel = top_pixel_df.item(0,0)
+
 
     t1 = time.perf_counter_ns()
     ms = (t1 - t0) // 1_000_000
