@@ -6,8 +6,7 @@
 **Timeframe:** 2022-04-01 12 to 2022-04-01 18
 
 ### Ranking of Colors by Distinct Users
-- **Top **
-  1. black: 412124 users
+ 1. black: 412124 users
  2. orange red: 299003 users
  3. white: 270212 users
  4. dark blue: 244148 users
