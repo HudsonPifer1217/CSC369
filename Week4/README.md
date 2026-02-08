@@ -10,11 +10,12 @@ r/place 2022 dataset.
 
 In the r/Place cavas data timelapse, there are several instances of a black or solid color rectangle being placed over an area, likely to censor something inappropriate. I decided to analyze those events as they seemed automated and non-human. I found 19 times that a rectangle was placed, most were black but there were a few other colors.
 
-- [Timeline of rectangle wipe events](plots/rectangles_timeline.html)
+- [Timeline of rectangle wipe events](https://hudsonpifer1217.github.io/CSC369/Week4/rectangles_timeline.html)
+
  
 In the timeline visualization above, vertical lines represent a rectangle placement. They are encoded as a four-coordinate rectangle. These placements are very rare: 19 in about 160 million events, and they occur in short bursts, consistent with reactive moderation rather than organic user behavior. The sparsity and scale of these actions clearly distinguish them from normal pixel placements. 
 
-- [Distribution of rectangle wipe areas](plots/rectangles_area_hist.html)
+- [Distribution of rectangle wipe areas](https://hudsonpifer1217.github.io/CSC369/Week4/rectangles_area_hist.html)
 
 In the above histogram, we can see the distribution of areas affected by administrative rectangle wipe events on r/Place. Most moderation actions are relatively small (16/19), but a small number of wipes affect tens of thousands of pixels in a single operation. This long-tailed distribution highlights the capacity of administrative actions to remove large regions of the canvas instantaneously, a capability unavailable to regular users.
 
@@ -31,16 +32,16 @@ I also searched the data set for irregular, precise placements over a sustained 
 
 The following scatterplot shows that cooldown-aware behavior is common among users, but highly consistent timing is rare. The small cluster of users in the bottom right with near-perfect cooldown usage and very low timing variability stands out as likely automated behavior. 
 
-- [Cooldown usage vs timing precision](plots/precision_scatter.html)
+- [Cooldown usage vs timing precision](https://hudsonpifer1217.github.io/CSC369/Week4/precision_scatter.html)
 
 This histogram shows the distribution of timing variability across highly active r/Place users, measured as the standard deviation of time between pixel placements. The distribution is strongly right-skewed: most users cluster on the left, with relatively low to moderate variability, while a long tail extends to the right representing users with extremely irregular timing. Within the far left edge of the distribution, a very small subset exhibits exceptionally low variability, indicating near-perfect timing consistency that is difficult to reconcile with sustained human behavior.
 
-- [Distribution of timing variability](plots/std_delta_histogram.html)
+- [Distribution of timing variability](https://hudsonpifer1217.github.io/CSC369/Week4/std_delta_histogram.html)
 
 
 **Detection script:** `user_precision_bucket.py`
 
-I alsi used DuckDB in user_precision_bucket.py to query the r/Place 2022 Parquet file and compute per-user timing summaries from normal (two-number) pixel placement events. The script computes inter-placement deltas per user, then aggregates each user’s placements, active span (hours), mean/std/min/max of delta seconds, and two behavioral fractions: how often placements fall near the ~300s cooldown (within 1 second) and how often they occur within 10s. It filters to users with at least 50 placements, orders by cooldown-aligned behavior, and writes the top results to bucket_precision_user_timing_summary.csv. The output is designed to surface users whose sustained, low-variance timing patterns are suspiciously consistent with automated or script-assisted activity.
+I also used DuckDB in user_precision_bucket.py to query the r/Place 2022 Parquet file and compute per-user timing summaries from normal (two-number) pixel placement events. The script computes inter-placement deltas per user, then aggregates each user’s placements, active span (hours), mean/std/min/max of delta seconds, and two behavioral fractions: how often placements fall near the ~300s cooldown (within 1 second) and how often they occur within 10s. It filters to users with at least 50 placements, orders by cooldown-aligned behavior, and writes the top results to bucket_precision_user_timing_summary.csv. The output is designed to surface users whose sustained, low-variance timing patterns are suspiciously consistent with automated or script-assisted activity.
 
 ---
 
