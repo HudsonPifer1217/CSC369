@@ -63,11 +63,13 @@ To visualize the data, I created a heat maps of the canvas for each time frame. 
 
 ### First Window:
 ![First Window Heat Map](pixel_activity_heatmap_1.png)
+
 In the earlier window, activity is spread out across the canvas, with many small hotspots scattered across the canvas. Large, well-defined regions are less common, and borders between regions are relatively fuzzy.
 
 
 ### Second Window:
 ![Second Window Heat Map](pixel_activity_heatmap_2.png)
+
 In the later window, activity is more concentrated into larger, clearly defined regions. Contested borders and defended areas are more visible, and interaction is less evenly distributed across the canvas.
 
 ### Connection to Model:
