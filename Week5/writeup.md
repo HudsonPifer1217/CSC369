@@ -4,7 +4,7 @@
 I wanted to know, given recent activity at a pixel, can we predict whether that pixel will experience sustained interaction (conflict) in the near future?
 
 ## Data and Preproccessing:
-I started with my "2022_place_canvas_history.parquet" file that I created in a previos analysis task. Then I aggregated the data further into pixel-minute units:
+I started with my "2022_place_canvas_history.parquet" file that I created in a previous analysis task. Then I aggregated the data further into pixel-minute units:
 - Each row represents a single pixel (x,y) furing a single minute
 - for each pixel-minute:
     - edits: number of edits
@@ -16,7 +16,7 @@ For feature engineering I defined temporal windows. So for each pixel-minute at 
     - past_5m_users: number of unique users in the past 5 minutes
 - Label (future window): activity in the next 5 minutes
 
-Then I defined **conflict**. I said a pixel is labeled as having **future condlict** if it receives **>= 5 edits in the next 5 minutes**. This filters out trivial churn and focuses the task on sustained, high-intensity interaction rather than a couple follow up edits.
+Then I defined **conflict**. I said a pixel is labeled as having **future condlict** if it receives **>= 5 edits in the next 5 minutes**. This filters out trivial edits and focuses on sustained, high-intensity interaction rather than a couple follow up edits.
 
 Also, it is important to note that features only use past information and labels use only future information to avoid temporal leakage.
 
@@ -36,11 +36,11 @@ The same feature set, label definition, and evaluation pipeline were applied to 
 
 ## Model:
 A logistic regression model was used as baseline classifier:
-The inputs were:
-- past_5m_edits
-- past_5m_users
-The output was:
-- probablity of a future conflict
+- The inputs were:
+    - past_5m_edits
+    - past_5m_users
+- The output was:
+    - probablity of a future conflict
 
 ## Quantitative Results:
 ### First Window:
@@ -62,12 +62,12 @@ These results show our models performance improves substatially in the later win
 To visualize the data, I created a heat maps of the canvas for each time frame. In the images, pixels with more edits in that time frame appear more intense (red and yellow) and pixels with less edits appear darker or black. They wer also plotted using a logarithmic color scale to account for the heavy-tailed distribution of activity.
 
 ### First Window:
-[First Window Heat Map] (pixel_activity_heatmap_1.png)
+![First Window Heat Map](pixel_activity_heatmap_1.png)
 In the earlier window, activity is spread out across the canvas, with many small hotspots scattered across the canvas. Large, well-defined regions are less common, and borders between regions are relatively fuzzy.
 
 
 ### Second Window:
-[Second Window Heat Map] (pixel_activity_heatmap_2.png)
+![Second Window Heat Map](pixel_activity_heatmap_2.png)
 In the later window, activity is more concentrated into larger, clearly defined regions. Contested borders and defended areas are more visible, and interaction is less evenly distributed across the canvas.
 
 ### Connection to Model:
