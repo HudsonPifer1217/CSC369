@@ -84,7 +84,7 @@ I found that departure hour exhibits a clear cascading delay effect:
 
  This pattern relfects system wide congestion accumulation. This result is most visible in this graph:
 
-![Delay Rate by Departure Hour](DelayRateByDepartureHour.png)
+![Delay Rate by Departure Hour](DelayRatesByDepartureHour.png)
 
 This is one of the strongest operational signals observed.
 
