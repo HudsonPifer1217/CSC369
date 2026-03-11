@@ -2,7 +2,7 @@
 
 ## Background and Research Question
 
-Likely, at some point in your life, you have been frustrated by a flight delay. Maybe it made you late for a wedding or an important conference, or maybe it just sucked waiting in the airport aimlessly. In 2023 alone, over 3 million passengers flew daily in the United States acording to the FAA (1). Many of these passenenger expereince delays; wether big or small, these can be extremely furstrating. Not only are delays hard for passenegers, they also are also costly for airlines in time and resources. 
+Likely, at some point in your life, you have been frustrated by a flight delay. Maybe it made you late for a wedding or an important conference, or maybe it just sucked waiting in the airport aimlessly. In 2023 alone, over 3 million passengers flew daily in the United States according to the FAA (1). Many of these passengers experience delays; whether big or small, these can be extremely frustrating. Not only are delays hard for passengers, they also are also costly for airlines in time and resources. 
 
 People often blame weather, airlines, and seasonality for delays. However, assuming a single airline or factor is always to blame is often naive.
 
@@ -38,7 +38,7 @@ The original dataset consisted of 71 monthly CSV files totaling approximately 17
 Key steps I took were:
  - Cancelled and diverted flights were removed.
  - Removal of flights involving Puerto Rico (PR), U.S. Virgin Islands, and a nonstandard airport code (TT).
- - Selectin relevant opeation and delay-related variables.
+ - Selecting relevant opeation and delay-related variables.
  - Modeling airport longitude and latitude data from the OpenFlights airports-extended dataset for geographic visualization.
 
 
@@ -149,21 +149,36 @@ Ultimately, while severe weather events create the most disruptive individual de
 
 ## Conclusions
 
-Flight delays are multi-factor events driven primarily by operational congestion and departure timing rather than weather alone. While weather is rare, it is strongly associated with severe disruptions. Airline identity remains a statistically significant predictor even after controlling for operational and seasonal factors.
+This analysis set out to determine the true drivers of domestic flight delays, pushing past the common assumption that bad weather is the primary culprit. The data reveals a clear divide between what causes a flight to be delayed in the first place, and what causes that delay to become severe.
 
-Interaction analysis reveals that delay accumulation intensifies during peak summer months, but most main effects remain stable across seasons.
+Looking back at the original hypotheses, the models paint a consistent picture of systemic network strain.
 
-Overall, delay probability is best understood as the result of systemic operational pressures rather than isolated weather shocks.
+### Operational Strain over Weather (H1 & H2): 
+
+While weather gets the most public blame, it is surprisingly rare, affecting only about 1% of flights. However, when it does occur, it is a massive driver of severe delays (H1). For day-to-day flying, airport congestion—measured through taxi-out time—is a much stronger and more consistent predictor of a flight being delayed than seasonality or weather (H2).
+
+### The Cascading Effect of Time (H3): 
+
+The later in the day a flight departs, the higher the probability of delay. As hypothesized, this compounding effect is significantly worse in the summer months, showing how tight turnaround schedules fail when the network is at peak capacity.
+
+### Airlines Matter (H4): 
+
+Even when holding airport congestion, time of day, and seasonality constant, airline identity remains a statistically significant predictor of delay. This proves that an airline's internal operational practices and scheduling buffers directly impact passenger experience.
+
+### Regional Wildcards (H5): 
+The most surprising finding came from the logistic regression model, which identified specific origin airports as the most extreme mathematical drivers of delay probability. While interaction testing showed that weather doesn't fundamentally change the probability of a delay between a large hub and a small airport, the descriptive maps proved that smaller, geographically constrained airports suffer much higher severity when weather strikes.
+
+In short, the U.S. aviation network is a highly sensitive operational system. While severe weather creates the most disruptive individual spikes in delay time, your odds of being delayed are fundamentally driven by where you are flying out of, how long you sit on the tarmac, and how late in the day you decide to travel.
+
 
 ## Limitations
 
- - The dataset attributes delay causes after the fact and may not fully capture cascading network effects.
+1. The dataset is observational. This prevents prevents us from uncovering strict causal relationships due to the interconnectedness of ariline networks.
 
- - Weather variables reflect delay attribution rather than meteorological measurements.
+2. The "weather delay" metric is an attribution made by the airliens after the fact. It is not a direct meteorological measurement, instead it is the airline's internal categorization of the delay rather than raw physical data like wind speed, visibility, or precipitation.
 
- - The model is explanatory rather than fully predictive.
+3. The logistic regression functions as an explanatory tool. Due to the inherent volitility of daily airline operations, I was able to flag flights with high-risk profiles for being delayed, but predicting the outcome of a single flight is very difficult.
 
- - Observational data limits causal inference.
 
 Sources:
 
