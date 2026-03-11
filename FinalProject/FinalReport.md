@@ -50,10 +50,9 @@ A flight was defined as "delayed" if either the Arrival Delay or Departure Delay
 
 The distribution of departure delays is highly right-skewed and zero-inflated. Most flights depart on time or with minimal delay, while a small fraction experience extremely long delays. Log-scaled histograms confirm a heavy tail structure.
 
-![Delay Distribution](DistrOfDelays.png)
+![Delay Distribution](visuals/DistrOfDelays.png)
 
-![Delay Distribution Log-Scaled](DistrOfDelaysLog.png)
-
+![Delay Distribution Log-Scaled](visuals/DistrOfDelaysLog.png)
 
 This justifies the choice to model delay as a binary outcome and severity category rather than normally distributed continuous minutes.
 
@@ -75,17 +74,17 @@ Weather-related delays are rare, occurring in approximately 1% of all flights. A
 
 This distribution is visible in the following graph:
 
-![Distribution of Weather Delays When There Is Weather Delay](DistrWeatherDelayWhenWeather.png)
+![Distribution of Weather Delays When There Is Weather Delay](visuals/DistrWeatherDelayWhenWeather.png)
 
 To understand where these severe delays happen, we can map the average weather delay severity (conditional on weather occurring) across the U.S.
 
-- [Weather Delay Map](https://hudsonpifer1217.github.io/CSC369/FinalProject/WeatherDelayMap.html)
+- [Weather Delay Map](https://hudsonpifer1217.github.io/CSC369/FinalProject/visuals/WeatherDelayMap.html)
 
 As the map illustrates, weather impact is highly heterogeneous. The darkest red clusters, indicating the highest average weather delay severity, are not located at massive coastal hubs, but rather at smaller regional airports in mountainous and snow-prone regions (e.g., SUN, GTF, ASE). This suggests that local infrastructure constraints and geographic conditions heavily mediate how disruptive a weather event becomes.
 
 While geography dictates where severe delays happen, seasonality dictates when. While a chi-square test confirms that weather delay frequency varies by month ($p < 0.001$, Cramér's V = 0.042) peaking in the summer. However, a Kruskal-Wallis test reveals that the median severity of those delays does not differ significantly across months ($p = 0.535$). To investigate this interaction between geography and seasonality further, an animated month-by-month map tracks these hotspots over time.
 
-- [Weather Delay Animation By Month Map](https://hudsonpifer1217.github.io/CSC369/FinalProject/WeatherDelayAnimationMap.html)
+- [Weather Delay Animation By Month Map](https://hudsonpifer1217.github.io/CSC369/FinalProject/visuals/WeatherDelayAnimationMap.html)
 
 The animation reveals two distinct temporal patterns:
 
@@ -105,7 +104,7 @@ The model achieved an overall accuracy of 64.9% and an ROC-AUC score of 0.688.
 
 As the ROC Curve illustrates, an AUC of 0.688 demonstrates that the model performs significantly better than random chance (represented by the dotted diagonal line) at identifying delayed flights based purely on operational and seasonal metadata, indicating a moderate and statistically robust ability to distinguish between classes.
 
-![ROC Curve](ROCCurve.png)
+![ROC Curve](visuals/ROCCurve.png)
 
 
 Because the model was balanced, it successfully captured 61.4% of all actual delays (Recall = 0.614), a significant improvement over standard baseline models. The precision of 33.5% for delayed flights reflects the inherent volatility of airline operations: the model effectively identifies flights with high-risk operational profiles, even if operational buffers occasionally allow some of those high-risk flights to arrive on time. Ultimately, this confirms that the model functions effectively as an explanatory tool to identify systemic delay pressures rather than a strict predictive engine.
@@ -116,7 +115,7 @@ To understand the driving factors behind these probabilities, I extracted the co
 
 Features extending to the right (blue) actively increase the probability of a delay, whereas features extending to the left (red) decrease it.
 
-![Top 20 Features](Top20Drivers.png)
+![Top 20 Features](visuals/Top20Drivers.png)
 
 Interestingly, while operational factors like taxi-out time are consistent systemic pressures, the model revealed that the most extreme statistical drivers of delay log-odds are specific Origin Airports.
 

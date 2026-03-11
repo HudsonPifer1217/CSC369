@@ -1,0 +1,7 @@
+*.csv
+*.parquet
+*.dat
+Data/*.duckdb
+*.parquet
+*.csv
+.DS_Store
