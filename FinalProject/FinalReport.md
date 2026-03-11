@@ -2,11 +2,13 @@
 
 ## Background and Research Question
 
-Likely, at some point in your life, you have been frustrated by a flight delay. Maybe it made you late for a wedding or an important conference, or maybe it just sucked waiting in the airport aimlessly. In 2023 alone, over 3 million passengers flew daily in the United States acording to the FAA (1). Many of these passenenger expereince delays; wether big or small, these can be extremely furstrating. Not only are delays hard for passenegers, they also are also costly for airlines in time and resources. People will often blame weather, airlines, and seasonality for delays. Several times I have said to myself, "I have never been on a United flight that wasn't delayed," on my flight from New York to Cal Poly. However, this is a naive thought.
+Likely, at some point in your life, you have been frustrated by a flight delay. Maybe it made you late for a wedding or an important conference, or maybe it just sucked waiting in the airport aimlessly. In 2023 alone, over 3 million passengers flew daily in the United States acording to the FAA (1). Many of these passenenger expereince delays; wether big or small, these can be extremely furstrating. Not only are delays hard for passenegers, they also are also costly for airlines in time and resources. 
 
-This leads to my research question: What factors most stronlgy influence the probability and severity of flight delays in the U.S., and how do these effects vary across airports, airlines, and seasons?
+People often blame weather, airlines, and seasonality for delays. However, assuming a single airline or factor is always to blame is often naive.
 
-I think this question is worth answering because it can help me as a consumer have a better understanding of the factors that lead to delays when traveling by airfair. It can also give me insight into why airliens experience more delays.
+ This leads to the core research question: What factors most strongly influence the probability and severity of flight delays in the U.S., and how do these effects vary across airports, airlines, and seasons? 
+ 
+ Answering this question provides valuable insight into the systemic factors driving delays for both consumers and airline operations.
 
 ### Hypothesis:
 
@@ -20,10 +22,10 @@ I think this question is worth answering because it can help me as a consumer ha
 
  - H5: Weather-related delay severity is greater at smaller regional airports than at major hub airports, reflecting geographic and infrastructure heterogeneity.
 
-This analysis focuses on explaining variation in delay probability and severity using statistical modeling rather than purely predictive machine learning.
+Note: this analysis focuses on explaining variation in delay probability and severity using statistical modeling rather than purely predictive machine learning.
 
 
-## Data
+## Data and Methology
 
 This analysis uses the Bureau of Transportation Statistics (BTS) Airline On-Time Performance dataset from January 2020 through November 2025. After cleaning, the dataset contains approximately 36.3 million domestic flights.
 
@@ -35,20 +37,12 @@ The original dataset consisted of 71 monthly CSV files totaling approximately 17
 
 Key steps I took were:
  - Cancelled and diverted flights were removed.
- - Removal of flights involving Puerto Rico (PR), U.S. Virgin Islands, and a nonstandard airport code (TT)
- - Selection or relevant opeation and delay-related variables
+ - Removal of flights involving Puerto Rico (PR), U.S. Virgin Islands, and a nonstandard airport code (TT).
+ - Selectin relevant opeation and delay-related variables.
+ - Modeling airport longitude and latitude data from the OpenFlights airports-extended dataset for geographic visualization.
 
-Then a flight was defined as "delayed" if:
-> Arrival Delay > 15 minutes or 
-> Departure Delay > 15 minutes
 
-Using this definition, I found 8,023,000 out of 36,367,047 flights were delayed in this time period.
-
-Then to analyze magnitude, delay severity was split into four categories: 
- - On time: $\leq 15$ minutes
- - Mild: 15 - 60 minutes
- - Moderate: 61 - 180 minutes
- - Severe: > 180 minutes
+A flight was defined as "delayed" if either the Arrival Delay or Departure Delay exceeded 15 minutes. Under this definition, 8,023,000 out of 36,367,047 flights were delayed. Delay severity was split into four categories: On time ($\le$ 15 minutes), Mild (15-60 minutes), Moderate (61-180 minutes), and Severe (> 180 minutes).
 
 ## Exploratory Data Analysis
 
@@ -61,164 +55,97 @@ The distribution of departure delays is highly right-skewed and zero-inflated. M
 ![Delay Distribution Log-Scaled](DistrOfDelaysLog.png)
 
 
-This justifies modeling delay both as a binary outcome and as a severity category rather than treating delay minutes as normally distributed.
+This justifies the choice to model delay as a binary outcome and severity category rather than normally distributed continuous minutes.
 
 ### Seasonality
 
-A chi-square test of independence between month and delay status strongly rejects independence (p $\lt$ 0.001). However, Cramer’s V = 0.082 indicates that the effect size is modest.
+A chi-square test strongly rejects independence between month and delay status ($p < 0.001$), but the effect size is modest (Cramér's V = 0.082).
 
 Delay rates peak in summer months (June and July ≈ 28–29%) and are lowest in early fall (September ≈ 18%). Seasonality exists but is not overwhelmingly strong on its own.
 
 ### Airline and Airport Variation
 
-Airline identity shows statistically significant variation in delay probability (Cramér’s V ≈ 0.093). Airport-level variation is also statistically significant but slightly weaker (Cramér’s V ≈ 0.069).
+Airline identity shows statistically significant variation in delay probability ($p < 0.001$, Cramér’s V ≈ 0.093). Airport-level variation is also statistically significant but slightly weaker ($p < 0.001$, Cramér’s V ≈ 0.069).
 
 This suggests airline operational practices contribute more to variation than geographic location alone.
 
-## Weather Analysis
+## Deep Dive: The Impact of Weather 
 
-### Frequency
+Weather-related delays are rare, occurring in approximately 1% of all flights. Across all flights, the average weather delay is just 4.18 minutes. However, when a flight does experience a weather delay, the distribution is strongly right-skewed; the median weather delay jumps to approximately 34 minutes, and the mean to 70 minutes.
 
-Weather-related delays occur in approximately 1% of flights.
-
-Notice, when we graph the distribution of all flights and their weather delays, the log scaled graph is strongly right skewed.
-
-![Distribution of Weather Delays](DistrWeatherDelays.png)
-
-Among all flights:
-
- - Median weather delay $= 0$
- - Average weather delay $\approx$ 4.18 minutes
-
-Additionally, when a flight has some weather delay, the distribution is also strongly right skewed.
+This distribution is visible in the following graph:
 
 ![Distribution of Weather Delays When There Is Weather Delay](DistrWeatherDelayWhenWeather.png)
 
-Among flights where weather delay occurs:
-
- - Median weather delay $\approx$ 34 minutes
-
- - Mean weather delay $\approx$ 70 minutes
-
-## Weather and Seasonality
-
-Earlier analysis showed that overall delay probability varies by month, with summer months experiencing higher delay rates. To determine whether this seasonal effect is driven by weather intensity, I tested whether the distribution of weather delay severity differs across months.
-
-Because weather delay minutes are heavily right-skewed and non-normal, I used a nonparametric Kruskal–Wallis test to evaluate whether the median severity differs across months.
-
-The Kruskal–Wallis statistic was 9.95 with a p-value of 0.535.
-
-This result indicates that we fail to reject the null hypothesis that weather delay severity distributions are equal across months. In other words, while overall delay probability varies seasonally, the severity of weather delays (conditional on weather occurring) does not differ significantly by month.
-
-The bar chart below shows a visible dip in average weather delay severity during summer months and higher averages in winter months. However, this variation is small relative to the overall dispersion in weather delay minutes. The seasonal pattern in total delays therefore appears to be driven more by changes in delay frequency than by changes in weather severity when weather occurs.
-
-![Weather Delay Severity by Month](AvgWeatherDelayMonth.png)
-
-### Weather and Airport 
-
-To examine geographic variation in weather-related delay severity, I created a map of U.S. airports showing the average weather delay (conditional on weather occurring) at each location.
-
-The map reveals substantial diversity across airport types. Smaller regional airports in mountainous and northern regions exhibit the highest conditional weather delay severity, while large coastal hubs show lower average severity when weather occurs.
-
-This suggests that infrastructure constraints, geographic conditions, and airport capacity likely mediate how disruptive weather events become. Weather does not affect all airports uniformly; instead, its operational impact depends on local context.
+To understand where these severe delays happen, we can map the average weather delay severity (conditional on weather occurring) across the U.S.
 
 - [Weather Delay Map](https://hudsonpifer1217.github.io/CSC369/FinalProject/WeatherDelayMap.html)
 
-To further investigate the interaction between geography and seasonality, I constructed an animated map showing weather delay severity and frequency for each airport month by month (2020–2025).
+As the map illustrates, weather impact is highly heterogeneous. The darkest red clusters, indicating the highest average weather delay severity, are not located at massive coastal hubs, but rather at smaller regional airports in mountainous and snow-prone regions (e.g., SUN, GTF, ASE). This suggests that local infrastructure constraints and geographic conditions heavily mediate how disruptive a weather event becomes.
+
+While geography dictates where severe delays happen, seasonality dictates when. While a chi-square test confirms that weather delay frequency varies by month ($p < 0.001$, Cramér's V = 0.042) peaking in the summer. However, a Kruskal-Wallis test reveals that the median severity of those delays does not differ significantly across months ($p = 0.535$). To investigate this interaction between geography and seasonality further, an animated month-by-month map tracks these hotspots over time.
 
 - [Weather Delay Animation By Month Map](https://hudsonpifer1217.github.io/CSC369/FinalProject/WeatherDelayAnimationMap.html)
 
-Two patterns the animation highlights are:
+The animation reveals two distinct temporal patterns:
 
- - During winter months, weather delays are more frequenty and more severe in the mountain west and pacific north west, but almost every area sees more delays in winter months compared so summer.
- - When there are big delays in summer months, they are primarily on the east coast.
+ - During winter months, weather delays are widespread, with severity heavily concentrated in the Mountain West and Pacific Northwest.
 
-The animation reinforces the conclusion that seasonality affects how often weather disruptions occur, but not necessarily how severe those disruptions are once they occur. Regional heterogeneity remains more pronounced than temporal variation in severity.  
+ - When significant delays occur in the summer months, the hotspots shift primarily to the East Coast.
+
+Ultimately, summer brings more frequent weather disruptions to the network, but the severity of a weather delay—once it occurs—is relatively constant year-round and highly dependent on local airport geography. Mild delays are primarily operational, whereas weather contributes meaningfully to Severe delays, partially supporting H1.
+
+## Multivariate Modeling and Interactions
+
+A logistic regression model was fit to estimate the probability of delay using operational and seasonal variables. To account for the heavy class imbalance inherent in flight delays (where the vast majority of flights are on-time), a balanced class weight parameter was utilized. This adjustment ensured the model did not artificially inflate its accuracy by simply defaulting to predicting flights as "on-time."
+
+### Model Performance and Evaluation
+
+The model achieved an overall accuracy of 64.9% and an ROC-AUC score of 0.688.
+
+As the ROC Curve illustrates, an AUC of 0.688 demonstrates that the model performs significantly better than random chance (represented by the dotted diagonal line) at identifying delayed flights based purely on operational and seasonal metadata, indicating a moderate and statistically robust ability to distinguish between classes.
+
+![ROC Curve](ROCCurve.png)
 
 
-### Weather Delay Frequency and Seasonality
+Because the model was balanced, it successfully captured 61.4% of all actual delays (Recall = 0.614), a significant improvement over standard baseline models. The precision of 33.5% for delayed flights reflects the inherent volatility of airline operations: the model effectively identifies flights with high-risk operational profiles, even if operational buffers occasionally allow some of those high-risk flights to arrive on time. Ultimately, this confirms that the model functions effectively as an explanatory tool to identify systemic delay pressures rather than a strict predictive engine.
 
-To determine whether weather-related delays occur more frequently in certain months, I conducted a chi-square test of independence between month and the presence of weather delay.
+### Key Drivers of Delay
 
-The test strongly rejects independence (χ² = 357.52, p < 0.001), indicating that weather delay frequency varies by month. However, the effect size is small (Cramér’s V = 0.042), suggesting that while the relationship is statistically significant, the magnitude of seasonal variation in weather delay frequency is modest.
+To understand the driving factors behind these probabilities, I extracted the coefficients from the balanced logistic regression model. Because the numeric variables were standardized, the coefficients represent the relative impact each feature has on the log-odds of a flight being delayed.
 
-Importantly, this seasonal effect on weather frequency is smaller than the seasonal effect observed for overall delay probability (Cramér’s V ≈ 0.082). Additionally, the Kruskal–Wallis test earlier showed that the severity of weather delays (conditional on weather occurring) does not differ significantly across months.
+Features extending to the right (blue) actively increase the probability of a delay, whereas features extending to the left (red) decrease it.
 
-Taken together, these results suggest that while weather-related disruptions occur more frequently in certain months, seasonal variation in overall flight delays is driven more by operational and congestion factors than by changes in weather severity.
+![Top 20 Features](Top20Drivers.png)
 
-### Airport Heterogeneity
+Interestingly, while operational factors like taxi-out time are consistent systemic pressures, the model revealed that the most extreme statistical drivers of delay log-odds are specific Origin Airports.
 
-Conditional analysis reveals significant heterogeneity across airports. Mountain and snow-prone regional airports (e.g., SUN, GTF, ASE) show the highest average weather delay severity when weather occurs. Major hubs in the Northeast (e.g., EWR, LGA, JFK) also exhibit severe weather amplification.
+ - Geographic Extremes: The top 20 features are dominated by small, remote regional airports rather than major coastal hubs. For instance, originating from AKN (King Salmon, AK) drastically increases the log-odds of a delay, while originating from SCC (Deadhorse, AK) or CNY (Moab, UT) strongly decreases them.
 
-This demonstrates that weather impact varies geographically and is not uniform across airport types.
-
-### Weather and Delay Magnitude
-
-Severity breakdown shows:
-
- - Mild delays are primarily operational (carrier, NAS, late aircraft)
-
- - Severe delays are multi-factor events
-
- - Weather contributes meaningfully to severe delays but does not dominate exclusively
-
-Thus, H1 is partially supported: weather strongly contributes to severe delays but is not the strongest overall predictor of delay probability.
-
-## Multivariate Modeling
-
-A logistic regression model was fit to estimate the probability of delay using:
-
- - TaxiOut
-
- - Departure Hour
-
- - Month
-
- - Airline
-
-Key Findings
-
- - TaxiOut: Each additional minute increases delay odds by ~6%.
-
- - Departure Hour: Each hour later increases delay odds by ~7–9%.
-
- - Airline: Significant differences remain after controlling for operational factors.
-
- - Month: Seasonal effects are statistically significant but smaller in magnitude.
-
-Pseudo R² ≈ 0.085 indicates moderate explanatory power for a noisy operational system.
-
-These results support H2 and H4.
+ - Supporting Regional Heterogeneity: This finding perfectly aligns with the earlier geographic weather analysis. It suggests that at massive hubs, delays are a product of high-volume congestion (a compounding operational issue), whereas at small regional airports, local infrastructure, highly specific weather patterns, and scheduling quirks create extreme, binary outcomes—flights are either highly prone to disruption or strictly buffered against it.
 
 ## Interaction Effects
 
-### Month x Departure Hour
+To fully test the remaining hypotheses for statistical significance, formal interaction terms were evaluated using logistic regression in statsmodels. This allowed for an analysis of whether the relationships between variables changed depending on the context:
 
-Interaction modeling shows that the effect of departure hour is amplified in summer months. In July, each additional hour increases delay odds by approximately 12%, compared to ~7% baseline.
+ - Month × Departure Hour: Interaction modeling shows that the effect of departure hour is amplified in summer months. In July, each additional hour increases delay odds by approximately 12%, compared to ~7% baseline. This supports H3 and demonstrates seasonal amplification of delay accumulation.
 
-This supports H3 and demonstrates seasonal amplification of delay accumulation.
+ - Weather × Airport Type: To test H5, an interaction between weather effects (WeatherPresent) and airport size (LargeHub) was evaluated. While the model confirmed a massive main effect for the presence of weather (yielding a coefficient of 6.2234 and a p-value of 0.000), the interaction term itself (WeatherPresent:LargeHub) yielded a p-value of 0.296. Because this is well above the standard 0.05 threshold for significance, testing whether weather effects differ between large hubs and smaller airports shows no statistically significant interaction in the binary delay model. Thus, H5 is not strongly supported in terms of delay probability, although severity heterogeneity exists descriptively.
 
-### Weather × Airport Type
 
-Testing whether weather effects differ between large hubs and smaller airports shows no statistically significant interaction in the binary delay model.
-
-Thus, H5 is not strongly supported in terms of delay probability, although severity heterogeneity exists descriptively.
-
-### Comparative Effect Strength
-
-Using Cramér’s V and regression coefficients:
+Synthesizing the initial exploratory data analysis (using Cramér’s V) and the final regression coefficients, the relative strengths of the main delay predictors can be summarized as follows:
 
 | Factor | Relative Strength |
 |--------|-------------------|
+| Origin Airport | Very Strong (Extremes at small regional airports) |
 | Departure Hour | Strong |
-| TaxiOut | Strong |
+| TaxiOut Time | Strong |
 | Airline | Moderate |
-| Month | Small–Moderate |
-| Weather (Probability) | Strong for Severe, Weak for Mild |
+| Month / Seasonality | Small–Moderate |
+| Weather (Probability) | Strong for Severe delays, Weak for Mild delays |
 
 
-Operational congestion and departure timing are the most consistent predictors of delay probability.
-
+Ultimately, while severe weather events create the most disruptive individual delays, day-to-day operational congestion (taxi-out) and network cascading (departure timing) remain the most consistent systemic predictors of delay probability.
 
 ## Conclusions
 
